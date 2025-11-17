@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { ChevronDown, Cookie, Hand, LogOut, Menu, X } from "lucide-react";
-import userImg from "../assets/images/def.png"; // Replace with your actual avatar image
-import logo from "../assets/images/Logo.png";
+import userImg from "../Assets/images/def.png"; // Replace with your actual avatar image
+import logo from "../Assets/images/Logo.png";
 import { Link, useNavigate } from "react-router-dom";
 // import { AiPostgenerator } from "../Controllers/Freemium.tools.Controller";
 import Cookies from "js-cookie";
@@ -26,6 +26,7 @@ export default function Navbar() {
   const [prevSearches, setPrevSearches] = useState([]);
 
   const searchRef = useRef();
+  const toolsRef = useRef();
 
   useEffect(() => {}, []);
 
@@ -58,8 +59,9 @@ export default function Navbar() {
     },
     {
       name: "Auto Citation Checker, Builder & Syncer",
-      isAvailable: false,
-      uri: "",
+      isAvailable: true,
+      uri: "CitationBuilder",
+      badge: "Beta",
     },
     { name: "GBP Audit", isAvailable: false, uri: "" },
     {
@@ -83,6 +85,16 @@ export default function Navbar() {
     };
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const handleToolsClickOutside = (e) => {
+      if (toolsRef.current && !toolsRef.current.contains(e.target)) {
+        setShowTools(false);
+      }
+    };
+    document.addEventListener("click", handleToolsClickOutside);
+    return () => document.removeEventListener("click", handleToolsClickOutside);
   }, []);
 
   const handleSearchSelect = (tool) => {
@@ -151,7 +163,10 @@ export default function Navbar() {
   const handleLogout = () => {
     Cookies.remove("user");
     setisLogedIn(false);
+    setShowUserMenu(false);
+    navigate('/login');
   };
+
 
   return (
     <nav className="bg-white sticky top-0 text-black px-6 py-4  flex items-center shadow-lg z-10  justify-between     w-full">
@@ -170,7 +185,7 @@ export default function Navbar() {
             <Link to="/Features"> Features </Link>
           </li>
 
-          <li className="relative">
+          <li className="relative" ref={toolsRef}>
             <button
               onClick={() => setShowTools(!showTools)}
               className="flex items-center gap-1 font-light cursor-pointer  hover:text-amber-600 [font-family:'Poppins',sans-serif]"
@@ -189,6 +204,7 @@ export default function Navbar() {
                       <li
                         onClick={() => {
                           HandleFreeTool(tool.name);
+                          setShowTools(false);
                         }}
                         key={`free-${index}`}
                         className="px-2 py-1 hover:text-amber-600 [font-family:'Poppins',sans-serif] font-light cursor-pointer"
@@ -207,11 +223,17 @@ export default function Navbar() {
                   <ul className="space-y-1">
                     {PremiumTools.map((tool, index) => (
                       <li
-                        onClick={() => HandleProTool(tool.name)}
+                        onClick={() => { HandleProTool(tool.name); setShowTools(false); }}
                         key={`premium-${index}`}
-                        className="px-2 py-1 hover:text-amber-600 [font-family:'Poppins',sans-serif] font-light cursor-pointer"
+                        className="flex items-center justify-between px-2 py-1 hover:text-amber-600 [font-family:'Poppins',sans-serif] font-light cursor-pointer"
                       >
-                        {tool.name}
+                        <span className="flex items-center gap-2">
+                          <span>{tool.name}</span>
+                          {tool.badge && (
+                            <span className="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">{tool.badge}</span>
+                          )}
+                        </span>
+                        {tool.isAvailable ? <span className="text-xs text-gray-400">Use</span> : <span className="text-xs text-gray-400">Soon</span>}
                       </li>
                     ))}
                   </ul>
@@ -313,7 +335,7 @@ export default function Navbar() {
               {showUserMenu && (
                 <div className="absolute right-0 inset-shadow-2xs mt-2 w-48 bg-white text-black rounded-md ring-1 ring-gray-200 z-50 flex flex-col justify-between h-48">
                   <div>
-                    <div className="px-4 py-2 font-light cursor-pointer hover:bg-gray-200 [font-family:'Poppins',sans-serif]">
+                    <div onClick={() => navigate('/profile')} className="px-4 py-2 font-light cursor-pointer hover:bg-gray-200 [font-family:'Poppins',sans-serif]">
                       Profile
                     </div>
                     <div className="px-4 py-2 font-light cursor-pointer hover:bg-gray-200 [font-family:'Poppins',sans-serif]">
@@ -390,10 +412,10 @@ export default function Navbar() {
                 {FreeTools.map((tool, index) => (
                   <li
                     key={`mobile-free-${index}`}
-                    onClick={() => HandleTool(tool)}
+                    onClick={() => { HandleFreeTool(tool.name); setMobileOpen(false); setMobileFreeOpen(false); }}
                     className="text-sm px-2 py-1 font-light cursor-pointer hover:text-amber-600 [font-family:'Poppins',sans-serif]"
                   >
-                    {tool}
+                    {tool.name}
                   </li>
                 ))}
               </ul>
@@ -417,9 +439,16 @@ export default function Navbar() {
                 {PremiumTools.map((tool, index) => (
                   <li
                     key={`mobile-premium-${index}`}
-                    className="text-sm px-2 py-1 font-light cursor-pointer hover:text-amber-600 [font-family:'Poppins',sans-serif]"
+                    onClick={() => HandleProTool(tool.name)}
+                    className="text-sm px-2 py-1 font-light cursor-pointer hover:text-amber-600 [font-family:'Poppins',sans-serif] flex items-center justify-between"
                   >
-                    {tool}
+                    <div className="flex items-center gap-2">
+                      <span>{tool.name}</span>
+                      {tool.badge && (
+                        <span className="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">{tool.badge}</span>
+                      )}
+                    </div>
+                    <div className="text-xs text-gray-400">{tool.isAvailable ? 'Use' : 'Soon'}</div>
                   </li>
                 ))}
               </ul>
@@ -428,17 +457,17 @@ export default function Navbar() {
 
           {isLogedIn === true ? (
             <div className="border-t pt-4">
-              <div className="hover:text-amber-600 [font-family:'Poppins',sans-serif] cursor-pointer">
+              <div onClick={() => { navigate('/profile'); setMobileOpen(false); }} className="hover:text-amber-600 [font-family:'Poppins',sans-serif] cursor-pointer">
                 Profile
               </div>
-              <div className="hover:text-amber-600 [font-family:'Poppins',sans-serif] cursor-pointer">
+              <div onClick={() => { /* optional settings route */ setMobileOpen(false); }} className="hover:text-amber-600 [font-family:'Poppins',sans-serif] cursor-pointer">
                 Settings
               </div>
-              <div className="hover:text-amber-600 [font-family:'Poppins',sans-serif] cursor-pointer">
+              <div onClick={() => { setMobileOpen(false); }} className="hover:text-amber-600 [font-family:'Poppins',sans-serif] cursor-pointer">
                 Placeholder
               </div>
               <button
-                onClick={handleLogout} // Add this function in your component
+                onClick={() => { handleLogout(); setMobileOpen(false); }}
                 className="mt-4 w-full flex items-center gap-2 px-4 py-2 bg-amber-600 text-white hover:bg-amber-700 rounded-md [font-family:'Poppins',sans-serif]"
               >
                 <LogOut size={16} /> Logout
@@ -446,7 +475,7 @@ export default function Navbar() {
             </div>
           ) : (
             <button
-              onClick={handleLogin}
+              onClick={() => { handleLogin(); setMobileOpen(false); }}
               className="bg-blue-600 text-white cursor-pointer px-4 py-2 rounded-md [font-family:'Poppins',sans-serif]"
             >
               Login

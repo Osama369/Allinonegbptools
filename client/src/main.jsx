@@ -1,13 +1,16 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
-import { ModalProvider } from "./Contexts/ModelContext.jsx";
-import { GoogleOAuthProvider } from "@react-oauth/google";
+import { ModalProvider } from "./Contexts/ModalContext.jsx";
+import GoogleProviderLoader from "./Components/GoogleProviderLoader.jsx";
 
-createRoot(document.getElementById("root")).render(
+const root = document.getElementById("root");
+if (!root) throw new Error("#root element not found in index.html");
+
+createRoot(root).render(
   <ModalProvider>
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIENT_ID}>
+    <GoogleProviderLoader clientId={import.meta.env.VITE_CLIENT_ID}>
       <App />
-    </GoogleOAuthProvider>
+    </GoogleProviderLoader>
   </ModalProvider>
 );

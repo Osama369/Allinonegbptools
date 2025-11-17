@@ -60,4 +60,20 @@ exports.loginUser = async (req, res) => {
   }
 };
 
+// Get current user (protected)
+exports.getCurrentUser = async (req, res) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) return res.status(401).json({ msg: 'Unauthorized' });
+
+    const user = await User.findById(userId).select('-password -__v');
+    if (!user) return res.status(404).json({ msg: 'User not found' });
+
+    res.json({ user });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+};
+
 

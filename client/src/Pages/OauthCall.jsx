@@ -11,8 +11,14 @@ export default function OAuthCallback() {
     const code = urlParams.get("code");
 
     if (code) {
+  const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
+      // include the redirect URI used by the client so the server can use
+      // the exact same value when exchanging the code for tokens. This
+      // prevents redirect_uri_mismatch errors when the server fallback
+      // differs from the value used to open the consent screen.
+      const redirect_uri = import.meta.env.VITE_OAUTH_REDIRECT || 'http://localhost:5173/OauthCall';
       axios
-        .post("http://localhost:5000/auth/google", { code })
+        .post(`${API_BASE}/auth/google`, { code, redirect_uri })
         .then((res) => {
           Cookies.set("user", res.data);
           navigate("/");

@@ -40,9 +40,8 @@ export const AllTools = {
   GoogleSearch: {
     name: "Google Search",
     run: async (query) => {
-      const url = `http://localhost:5000/api/tools/serp-suggestion?q=${encodeURIComponent(
-        query
-      )}`;
+      const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
+      const url = `${API_BASE}/api/tools/serp-suggestion?q=${encodeURIComponent(query)}`;
 
       const res = await fetch(url);
       const data = await res.json();
@@ -60,9 +59,8 @@ export const AllTools = {
   GoogleRankingCheck: {
     name: "Google Domain Ranking",
     run: async (query) => {
-      const url = `http://localhost:5000/api/tools/serp-ranking?q=${encodeURIComponent(
-        query
-      )}&domain=google.com`;
+      const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
+      const url = `${API_BASE}/api/tools/serp-ranking?q=${encodeURIComponent(query)}&domain=google.com`;
 
       try {
         const res = await fetch(url);

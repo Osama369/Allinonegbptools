@@ -5,6 +5,7 @@ import MainLayout from "../layouts/MainLayout";
 import AuthLayout from "../layouts/AuthLayout"; // 🔹 New import
 
 import Register from "../Pages/Register.jsx";
+import Profile from "../Pages/Profile.jsx";
 import PrivacyPolicy from "../Pages/PrivacyPage.jsx";
 import TermsOfService from "../Pages/Terms.jsx";
 import PricingPage from "../Pages/Pricing.jsx";
@@ -20,6 +21,7 @@ import RankingPage from "../Pages/RankingPage.jsx";
 import ToolComingSoon from "../Pages/ToolComingSoon.jsx";
 import Check from "../Pages/check.jsx";
 import OauthCall from "../Pages/OauthCall.jsx";
+import CitationBuilder from "../Pages/CitationBuilder.jsx";
 
 import ContactPage from "../Pages/Contact.jsx";
 import PlanPage from "../Pages/PlanPage.jsx";
@@ -77,6 +79,8 @@ export default function AppRoutes() {
           <Route path="/OauthCall" element={<OauthCall />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/PlanPage" element={<PlanPage />} />
+          <Route path="/CitationBuilder" element={<CitationBuilder />} />
+          <Route path="/profile" element={<Profile />} />
         </Route>
 
         <Route element={<AuthLayout />}>
